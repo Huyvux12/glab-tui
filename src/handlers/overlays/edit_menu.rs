@@ -1582,6 +1582,13 @@ pub fn handle_key(
                     } else {
                         app.scope.as_str().to_string()
                     };
+                    let milestone = match app.listed_milestone(&project, entity_iid) {
+                        Ok(milestone) => milestone,
+                        Err(e) => {
+                            app.show_error(e.to_string());
+                            return;
+                        }
+                    };
                     let tx = tx.clone();
                     let tab = app.active_tab;
                     fx.spawn(async move {
@@ -1601,7 +1608,7 @@ pub fn handle_key(
                                 Some(due_date.as_str())
                             };
                         match client
-                            .update_milestone(&project, entity_iid, &title, &description, sd, dd)
+                            .update_milestone(&project, &milestone, &title, &description, sd, dd)
                             .await
                         {
                             Ok(_) => {
