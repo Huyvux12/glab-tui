@@ -210,6 +210,30 @@ fn milestones_tab_reopens_the_selected_milestone() {
 }
 
 #[test]
+fn milestones_tab_edits_the_selected_milestone() {
+    let mut session = session_on_tab(7, "v1.0 Milestone");
+    search(&mut session, "Roadmap");
+    assert_hides(&session, "v1.0 Milestone");
+
+    session.press_keys(b"e");
+    session
+        .wait_for_screen_contains("Edit Milestone %2", 5000)
+        .expect("e should open the milestone edit form");
+    // An unchanged form submits nothing, so append to the title first. The
+    // form opens on the read-only ID row above it.
+    session.press_keys(b"j\r");
+    session.press_keys(b"-rc");
+    session.press_keys(b"\x18"); // Ctrl+X submits the form
+    session
+        .wait_for_cli_call(
+            "glab milestone edit 102 -R test-owner/test-repo --title v2.0 Roadmap-rc \
+             --description Next release --start-date 2026-08-01 --due-date 2026-08-31\n",
+            5000,
+        )
+        .expect("submitting should edit the selected milestone");
+}
+
+#[test]
 fn milestones_tab_deletes_the_selected_milestone() {
     let mut session = session_on_tab(7, "v1.0 Milestone");
     search(&mut session, "Roadmap");
