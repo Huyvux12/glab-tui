@@ -2892,15 +2892,6 @@ pub fn handle_active_tab_key(
                     // Inside a descent Esc means the level you can see, not a
                     // job list left over from an earlier visit.
                     app.ascend();
-                } else if app.active_tab == crate::app::Tab::Pipelines && !app.jobs.items.is_empty()
-                {
-                    if app.job_trace.is_some() {
-                        app.job_trace = None;
-                    } else {
-                        app.jobs.items.clear();
-                        app.jobs.state.select(None);
-                        app.selected_jobs.clear();
-                    }
                 } else if !app.search_query.is_empty() {
                     // Last-resort Esc action: drop the active filter. The
                     // previous Esc press already exited the search input
