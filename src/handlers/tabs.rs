@@ -2625,7 +2625,8 @@ pub fn handle_active_tab_key(
                         let Some(client) = app.gitlab_client.clone() else {
                             return false;
                         };
-                        let project_path = app.scope.as_str().to_string();
+                        let project_path =
+                            app.scope.project_of(&milestone.project_path).to_string();
                         let milestone = (*milestone).clone();
                         let tx2 = tx.clone();
 
